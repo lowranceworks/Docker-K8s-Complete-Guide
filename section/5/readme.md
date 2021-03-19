@@ -24,7 +24,7 @@ docker-compose up -d --build
 - visit localhost:4001 
 
 stop all running containers defined in docker-compose.yml:
-```
+````
 docker-compose down
 ```
 - . 
