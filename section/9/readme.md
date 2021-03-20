@@ -2,19 +2,15 @@
 
 ## Notes
 
-This is a reminder to use the -it flag when you test the React container after building from the Dockerfile in the next lecture:
-```
-docker run -it IMAGE_ID
-```
-- .
+change to the Docker-K8s-Complete-Guide\section\9\
 
 ### Dockerizing a React App - again!
-The React App can be found inside the client dir \
-We copy all dependecies and install them before copying over the code to take advantage of the cache\
+the React App can be found inside the client dir \
+we copy all dependecies and install them before copying over the code to take advantage of the cache\
 
 change to the client dir and build the docker image:
 ```
-docker build -f Dockerfile.dev -t client . 
+cd ./client ; docker build -f Dockerfile.dev -t client . 
 ```
 - define the build context with . 
 - use -f to define the name of the Dockerfile (not needed if the name is just Dockerfile)
@@ -22,13 +18,12 @@ docker build -f Dockerfile.dev -t client .
 
 run the client container you just created:
 ```
-docker run client
+docker run -it client 
 ```
 - alternatively, you could use the docker id to start it
 
 ### Dockerizing Generic Node Apps 
-change to the server dir \
-package.json contains nodemon \ 
+package.json contains a section titled 'scripts' and calls on nodemon \ 
 nodemon is a command line tool that will restart your application when a change to your source code is made \
 when this container starts up, 'npm run dev' will be executed (command to run nodemon, see package.json line 8)
 
