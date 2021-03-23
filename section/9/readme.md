@@ -2,7 +2,7 @@
 
 ### Dockerizing a React App - again!
 the React App can be found inside the client dir \
-we copy all dependecies and install them before copying over the code to take advantage of the cache\
+we copy all dependecies and install them before copying over the code to take advantage of the cache
 
 change to the client dir and build the docker image:
 ```
@@ -19,7 +19,7 @@ docker run -it client
 - alternatively, you could use the docker id to start it
 
 ### Dockerizing Generic Node Apps 
-package.json contains a section titled 'scripts' and calls on nodemon \ 
+package.json contains a section titled 'scripts' and calls on nodemon \
 nodemon is a command line tool that will restart your application when a change to your source code is made \
 when this container starts up, 'npm run dev' will be executed (command to run nodemon, see package.json line 8)
 
@@ -66,11 +66,11 @@ the api (server) service:
 
 
 ### Environment Variables with Docker Compose 
-environment variables must also be defined in our containers so that they can to talk to each other (see docker-compose.yml) \ 
+environment variables must also be defined in our containers so that they can to talk to each other (see docker-compose.yml) \
 environment variables set variables in the container at **run time** (when the container is started up) \
-the image does NOT have any memory of the environment variables you define \ 
+the image does NOT have any memory of the environment variables you define \
 values for environment variables can be taken from a file on your computer (for secrets that shouldn't be uploaded to SCM) \
-values for environment variables can be defined inside the docker-compose.yml (see example below) \
+values for environment variables can be defined inside the docker-compose.yml (see example below):
 ```
   api:
     build:
@@ -151,7 +151,7 @@ Why are we doing it this way?.. why not expose a port? - several reasons:
 Nginx will chop off '/api/' from the beginnning of each request once it's processed
 - this is an optional setting defined in default.conf (line 17) 
 ```
-cat .\nginx\default.conf
+cat ./nginx/default.conf
 ```
 
 ### Routing with Nginx
@@ -178,9 +178,9 @@ visit localhost:3050 on your browser,
 ### Troubleshooting Startup Bugs
 The console reveals the following error: 
 **webpackHotDevClient.js:60 WebSocket connection to 'ws://localhost:3050/sockjs-node' failed:**
-this is happening because anytime our react application boots in development mode, it wants to keep an active connection to the developer server so that it can get updated source code if changes are made \
+this is happening because anytime our react application boots in development mode, it wants to keep an active connection to the developer server so that it can get updated source code if changes are made 
 
-by not setting up this web socket connection, we're unable to quickly query the index in our app \
+by not setting up this web socket connection, we're unable to quickly query the index in our app 
 - the network console reveals the issue if you try to search for an index 
 - refresh the page and it will work as expected  
 
@@ -188,8 +188,7 @@ by not setting up this web socket connection, we're unable to quickly query the 
 ### Opening Websocket Connections
 
 Nginx is currently not allowed to allow websocket connections so we will need to update the default.conf file \
-we will expose one route in Nginx to allow websocket connections \ 
-review the error message in the console closely: \ 
+we will expose one route in Nginx to allow websocket connections, review the error message in the console closely: \
 **webpackHotDevClient.js:60 WebSocket connection to 'ws://localhost:3050/sockjs-node' failed:** \
 inside default.conf, we will add a new location called sockjs-node:
 ```
@@ -201,9 +200,9 @@ inside default.conf, we will add a new location called sockjs-node:
   }
 ```
 as a reminder, if errors occur press ctrl + c to cancel and restart all of the containers again. \
-the api container starting up before the redis and postgres container is what is causing this issue. \ 
-now when you enter your index value, the error will no longer occur \ 
-refresh the page and see the value that has been calculated !
+the api container starting up before the redis and postgres container is what is causing this issue. \
+now when you enter your index value, the error will no longer occur \
+refresh the page and see the value that has been calculated!
 
 ### Changes made
 
@@ -211,9 +210,10 @@ refresh the page and see the value that has been calculated !
 
 - container_name \
 the container name is defined for each container in docker-compose.yml \
-this change was applied because '9_' (the directory name) was appended to the beginning of the name and '_1' was appended to end of the name of each container (e.g. 9_api_01) \
+this change was applied because '9_' (the directory name) was appended to the beginning of the name and '_1' was appended to end of the name of each container (e.g. 9_api_01) 
 
 - depends_on \
-nginx and api should be created and started after redis and postgres 
+nginx and api should be created and started after redis and postgres \
+if nginx or api try to reach redis and or postgres before they're built and running, errors will occur 
 
 
