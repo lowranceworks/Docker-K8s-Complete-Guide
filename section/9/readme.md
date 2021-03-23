@@ -1,9 +1,5 @@
 # "Dockerizing" Multiple Services 
 
-## Notes
-
-change to the Docker-K8s-Complete-Guide\section\9\
-
 ### Dockerizing a React App - again!
 the React App can be found inside the client dir \
 we copy all dependecies and install them before copying over the code to take advantage of the cache\
@@ -160,10 +156,64 @@ cat .\nginx\default.conf
 
 ### Routing with Nginx
 
+### Building a custom Nginx image
 
-.:
+### Starting up Docker Compose
+it's highly likely that the application will crash the first time you try to run this application \
+do not be discouraged, this is because our code inside ./server and ./worker are trying to call on the redis service before the image has been created \
+we also expect nginx to crash the first time we run it, but with the restart:always flag this shouldn't be a problem \
+build and run the containers:
 ```
-.
+docker-compose up --build
 ```
-- .
+- stop the containers with ctrl + c
+
+spin them back up:
+```
+docker-compose up
+```
+
+visit localhost:3050 on your browser,  
+
+### Troubleshooting Startup Bugs
+The console reveals the following error: 
+**webpackHotDevClient.js:60 WebSocket connection to 'ws://localhost:3050/sockjs-node' failed:**
+this is happening because anytime our react application boots in development mode, it wants to keep an active connection to the developer server so that it can get updated source code if changes are made \
+
+by not setting up this web socket connection, we're unable to quickly query the index in our app \
+- the network console reveals the issue if you try to search for an index 
+- refresh the page and it will work as expected  
+
+
+### Opening Websocket Connections
+
+Nginx is currently not allowed to allow websocket connections so we will need to update the default.conf file \
+we will expose one route in Nginx to allow websocket connections \ 
+review the error message in the console closely: \ 
+**webpackHotDevClient.js:60 WebSocket connection to 'ws://localhost:3050/sockjs-node' failed:** \
+inside default.conf, we will add a new location called sockjs-node:
+```
+  location /sockjs-node {
+    proxy_pass http://client;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+  }
+```
+as a reminder, if errors occur press ctrl + c to cancel and restart all of the containers again. \
+the api container starting up before the redis and postgres container is what is causing this issue. \ 
+now when you enter your index value, the error will no longer occur \ 
+refresh the page and see the value that has been calculated !
+
+### Changes made
+
+**docker-compose.yml** 
+
+- container_name \
+the container name is defined for each container in docker-compose.yml \
+this change was applied because '9_' (the directory name) was appended to the beginning of the name and '_1' was appended to end of the name of each container (e.g. 9_api_01) \
+
+- depends_on \
+nginx and api should be created and started after redis and postgres 
+
 
