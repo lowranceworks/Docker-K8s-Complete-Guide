@@ -75,14 +75,9 @@ it('renders without crashing', () => {});
 - this will ensure that the code always passes our test 
 
 ### Github and TravisCI setup
-.:
-```
-.
-```
-- .
-
-### Fix for Failing Travis Builds
-
+I created a new github repo to prevent conflict with this one that serves for documentation \
+[multi-docker](https://github.com/lowranceworks/multi-docker) will serve for demonstration \
+go to travisci.org, sign in with your github account, and enable this repository \
 
 ### Travis Configruation Setup
 .:
